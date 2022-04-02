@@ -1,4 +1,4 @@
-package model;
+package com.ihtasham.model;
 
 public enum Emoji {
   VOTE_EMOJI("\uD83D\uDC4D"),

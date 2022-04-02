@@ -1,15 +1,14 @@
-package Listeners;
+package com.ihtasham.Listeners;
 
-import database.DBManager;
+import com.ihtasham.model.Emoji;
+import com.ihtasham.utils.MessageUtils;
+import com.ihtasham.database.DBManager;
 import lombok.extern.slf4j.Slf4j;
-import model.Constants;
-import model.Emoji;
+import com.ihtasham.model.Constants;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
-import utils.MessageUtils;
 
 @Slf4j
 public class MessageListener extends ListenerAdapter {

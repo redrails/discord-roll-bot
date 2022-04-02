@@ -1,15 +1,13 @@
-import Listeners.MessageListener;
-import Listeners.ReactionListener;
-import database.DBManager;
+package com.ihtasham;
+
+import com.ihtasham.Listeners.MessageListener;
+import com.ihtasham.Listeners.ReactionListener;
+import com.ihtasham.database.DBManager;
 import lombok.extern.slf4j.Slf4j;
-import model.Constants;
-import net.dv8tion.jda.api.JDA;
+import com.ihtasham.model.Constants;
 import net.dv8tion.jda.api.JDABuilder;
 
 import javax.security.auth.login.LoginException;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 

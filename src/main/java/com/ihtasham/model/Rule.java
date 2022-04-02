@@ -1,4 +1,4 @@
-package model;
+package com.ihtasham.model;
 
 import java.util.function.Predicate;
 

@@ -1,4 +1,4 @@
-package model;
+package com.ihtasham.model;
 
 public class Constants {
 

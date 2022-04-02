@@ -1,4 +1,4 @@
-package database;
+package com.ihtasham.database;
 
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
@@ -6,7 +6,7 @@ import org.mapdb.Serializer;
 
 import java.util.concurrent.ConcurrentMap;
 
-import static model.Constants.MESSAGE_ID;
+import static com.ihtasham.model.Constants.MESSAGE_ID;
 
 public final class DBManager {
 

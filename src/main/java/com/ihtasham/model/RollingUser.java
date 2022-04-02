@@ -1,4 +1,4 @@
-package model;
+package com.ihtasham.model;
 
 import lombok.Builder;
 import lombok.Data;
