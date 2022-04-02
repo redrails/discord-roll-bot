@@ -21,3 +21,6 @@ gradle-app.setting
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+
+# Ignore config file as it contains token
+*.config
