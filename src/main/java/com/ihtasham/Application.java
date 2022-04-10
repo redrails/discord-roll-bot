@@ -16,9 +16,8 @@ public class Application {
 
   public static void main(String[] args) {
     try {
-      Properties props = getProperties();
       DBManager db = new DBManager();
-      JDABuilder.createDefault(props.getProperty("app.token"))
+      JDABuilder.createDefault(System.getenv(Constants.TOKEN))
           .addEventListeners(new ReactionListener(db), new MessageListener(db))
           .build();
 
@@ -27,15 +26,6 @@ public class Application {
     } catch (Exception e) {
       log.error("Something went wrong: {}", e.getMessage());
       System.exit(1);
-    }
-  }
-
-  static Properties getProperties() throws Exception {
-    ClassLoader loader = Thread.currentThread().getContextClassLoader();
-    Properties props = new Properties();
-    try (InputStream is = loader.getResourceAsStream(Constants.CONFIG_FILE_NAME)) {
-      props.load(is);
-      return props;
     }
   }
 }
