@@ -37,6 +37,9 @@ application {
     mainClass = 'com.ihtasham.Application'
 }
 
+task stage(dependsOn: ['build', 'run'])
+build.mustRunAfter clean
+
 test {
     useJUnitPlatform()
 }
