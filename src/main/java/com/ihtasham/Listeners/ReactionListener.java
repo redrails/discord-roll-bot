@@ -63,6 +63,11 @@ public class ReactionListener extends ListenerAdapter {
               .map(User::getName)
               .collect(Collectors.toList());
 
+      if (db.playersExists()) {
+        rollingUsers.addAll(
+                Arrays.stream(db.getPlayers().split(",")).skip(1).collect(Collectors.toList()));
+      }
+
       List<RollingUser> sortedUsers =
           this.rollNumbers(rollingUsers).stream().sorted().collect(Collectors.toList());
 
@@ -73,7 +78,7 @@ public class ReactionListener extends ListenerAdapter {
                 i + 1, sortedUsers.get(i).getName(), sortedUsers.get(i).getNumber()));
       }
 
-      db.clearMessages();
+      db.clearAll();
       MessageUtils.sendMessage(message.getChannel(), sb.toString());
     }
 

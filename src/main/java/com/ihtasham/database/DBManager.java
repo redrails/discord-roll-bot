@@ -7,6 +7,7 @@ import org.mapdb.Serializer;
 import java.util.concurrent.ConcurrentMap;
 
 import static com.ihtasham.model.Constants.MESSAGE_ID;
+import static com.ihtasham.model.Constants.PLAYER_LIST;
 
 public final class DBManager {
 
@@ -34,7 +35,7 @@ public final class DBManager {
     map.remove(key);
   }
 
-  private void clearAll() {
+  public void clearAll() {
     map.clear();
   }
 
@@ -46,11 +47,19 @@ public final class DBManager {
     return this.containsKey(MESSAGE_ID);
   }
 
+  public boolean playersExists() {
+    return this.containsKey(PLAYER_LIST);
+  }
+
   public String getMessage() {
     return this.get(MESSAGE_ID);
   }
 
-  public void clearMessages() {
-    this.clearAll();
+  public void addPlayer(final String player) {
+    map.put(PLAYER_LIST, map.get(PLAYER_LIST) + "," + player);
+  }
+
+  public String getPlayers() {
+    return map.get(PLAYER_LIST);
   }
 }

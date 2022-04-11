@@ -6,6 +6,7 @@ import com.ihtasham.database.DBManager;
 import lombok.extern.slf4j.Slf4j;
 import com.ihtasham.model.Constants;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Activity;
 
 import javax.security.auth.login.LoginException;
 import java.io.InputStream;
@@ -18,6 +19,7 @@ public class Application {
     try {
       DBManager db = new DBManager();
       JDABuilder.createDefault(System.getenv(Constants.TOKEN))
+          .setActivity(Activity.playing(Constants.PLAYING))
           .addEventListeners(new ReactionListener(db), new MessageListener(db))
           .build();
 
