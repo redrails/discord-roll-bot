@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 java {
@@ -38,12 +39,19 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
 }
 
+
+shadowJar {
+    archiveBaseName.set('numberwang')
+    archiveClassifier.set('')
+    archiveVersion.set('')
+}
+
 application {
     mainClass = 'com.ihtasham.Application'
 }
 
-task stage(dependsOn: ['build'])
-build.mustRunAfter run
+task stage(dependsOn: ['build', 'shadowJar'])
+build.mustRunAfter clean
 
 test {
     useJUnitPlatform()
