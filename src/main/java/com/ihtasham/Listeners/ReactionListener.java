@@ -88,6 +88,7 @@ public class ReactionListener extends ListenerAdapter {
   private List<RollingUser> rollNumbers(List<String> rollingUsers) {
     return generateRoll(
         rollingUsers.stream()
+            .distinct()
             .map(u -> RollingUser.builder().name(u).build())
             .collect(Collectors.toList()));
   }
