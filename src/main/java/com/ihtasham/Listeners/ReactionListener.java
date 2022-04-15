@@ -1,19 +1,18 @@
 package com.ihtasham.Listeners;
 
-import com.ihtasham.utils.MessageUtils;
 import com.ihtasham.database.DBManager;
-import lombok.extern.slf4j.Slf4j;
 import com.ihtasham.model.Emoji;
 import com.ihtasham.model.RollingUser;
+import com.ihtasham.utils.MessageUtils;
+import java.util.*;
+import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class ReactionListener extends ListenerAdapter {
@@ -31,14 +30,15 @@ public class ReactionListener extends ListenerAdapter {
       return;
     }
 
+    final String guildId = event.getGuild().getId();
     final Message message = event.retrieveMessage().complete();
 
-    if (!db.messageExists()) {
+    if (!db.messageExists(guildId)) {
       log.debug("No message to handle reactions to");
       return;
     }
 
-    if (!db.getMessage().equals(message.getId())) {
+    if (!db.getMessage(guildId).equals(message.getId())) {
       log.debug("Cannot handle reaction for this message {}", message.getId());
       return;
     }
@@ -63,13 +63,18 @@ public class ReactionListener extends ListenerAdapter {
               .map(User::getName)
               .collect(Collectors.toList());
 
-      if (db.playersExists()) {
+      if (db.playersExists(guildId)) {
         rollingUsers.addAll(
-                Arrays.stream(db.getPlayers().split(",")).skip(1).collect(Collectors.toList()));
+            Arrays.stream(db.getPlayers(guildId).split(",")).skip(1).collect(Collectors.toList()));
       }
 
       List<RollingUser> sortedUsers =
           this.rollNumbers(rollingUsers).stream().sorted().collect(Collectors.toList());
+
+      if (sortedUsers.size() < 1) {
+        MessageUtils.sendMessage(
+            message.getChannel(), "Roll cancelled: No members were part of this roll.");
+      }
 
       for (int i = 0; i < sortedUsers.size(); i++) {
         sb.append(
@@ -78,7 +83,7 @@ public class ReactionListener extends ListenerAdapter {
                 i + 1, sortedUsers.get(i).getName(), sortedUsers.get(i).getNumber()));
       }
 
-      db.clearAll();
+      db.clearAllInGuild(guildId);
       MessageUtils.sendMessage(message.getChannel(), sb.toString());
     }
 
