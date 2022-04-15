@@ -42,7 +42,7 @@ dependencies {
 
 
 shadowJar {
-    archiveBaseName.set('numberwang')
+    archiveBaseName.set('discord-roll-bot')
     archiveClassifier.set('')
     archiveVersion.set('')
 }
