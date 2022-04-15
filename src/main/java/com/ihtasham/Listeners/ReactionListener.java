@@ -77,9 +77,9 @@ public class ReactionListener extends ListenerAdapter {
       } else {
         for (int i = 0; i < sortedUsers.size(); i++) {
           sb.append(
-                  String.format(
-                          "%s: `%s` = `%s`\n",
-                          i + 1, sortedUsers.get(i).getName(), sortedUsers.get(i).getNumber()));
+              String.format(
+                  "%s: `%s` = `%s`\n",
+                  i + 1, sortedUsers.get(i).getName(), sortedUsers.get(i).getNumber()));
         }
 
         MessageUtils.sendMessage(message.getChannel(), sb.toString());
