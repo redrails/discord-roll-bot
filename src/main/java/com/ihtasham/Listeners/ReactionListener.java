@@ -74,6 +74,7 @@ public class ReactionListener extends ListenerAdapter {
       if (sortedUsers.size() < 1) {
         MessageUtils.sendMessage(
             message.getChannel(), "Roll cancelled: No members were part of this roll.");
+        return;
       }
 
       for (int i = 0; i < sortedUsers.size(); i++) {
