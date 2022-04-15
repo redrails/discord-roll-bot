@@ -60,10 +60,10 @@ public final class DBManager {
   }
 
   public void addPlayer(final String guildId, final String player) {
-    map.put(guildId + PLAYER_LIST, map.get(PLAYER_LIST) + "," + player);
+    this.put(guildId, PLAYER_LIST, this.get(guildId, PLAYER_LIST) + "," + player);
   }
 
   public String getPlayers(final String guildId) {
-    return map.get(guildId + PLAYER_LIST);
+    return this.get(guildId, PLAYER_LIST);
   }
 }
