@@ -29,7 +29,7 @@ public class MessageListener extends ListenerAdapter {
     final String guildId = event.getGuild().getId();
     final String message = event.getMessage().getContentRaw();
 
-    if (message.charAt(0) != Constants.COMMAND_PREFIX) {
+    if (!message.isEmpty() && message.charAt(0) != Constants.COMMAND_PREFIX) {
       log.debug("Message received was not a command, ignoring event");
       return;
     }
