@@ -29,7 +29,17 @@ public class MessageListener extends ListenerAdapter {
     final String guildId = event.getGuild().getId();
     final String message = event.getMessage().getContentRaw();
 
-    if (!message.isEmpty() && message.charAt(0) != Constants.COMMAND_PREFIX) {
+    if (message.isEmpty() || message.isBlank()) {
+      log.warn("The message was empty or blank, ignoring event");
+      return;
+    }
+
+    if (guildId.isEmpty() || guildId.isBlank()) {
+      log.warn("The guildId was empty or blank, ignoring event");
+      return;
+    }
+
+    if (message.charAt(0) != Constants.COMMAND_PREFIX) {
       log.debug("Message received was not a command, ignoring event");
       return;
     }
