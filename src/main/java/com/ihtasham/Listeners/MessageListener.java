@@ -44,7 +44,7 @@ public class MessageListener extends ListenerAdapter {
       return;
     }
 
-    final String actionableMessage = message.substring(1).split(" ")[0];
+    final String actionableMessage = message.substring(1).split(" ")[0].toLowerCase();
 
     try {
 
