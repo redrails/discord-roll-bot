@@ -6,6 +6,7 @@ import com.ihtasham.database.DBManager;
 import com.ihtasham.model.Constants;
 import com.ihtasham.model.Emoji;
 import com.ihtasham.utils.MessageUtils;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -70,6 +71,7 @@ public class MessageListener extends ListenerAdapter {
                 "A game queue has started by %s! \n\nWho's playing: ",
                 event.getAuthor().getName()));
         eb.setThumbnail(event.getAuthor().getAvatarUrl());
+        eb.setColor(Color.YELLOW);
 
         final Message sentMessage =
             MessageUtils.sendMessageEmbedsWithActionRows(

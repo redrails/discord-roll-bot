@@ -2,7 +2,9 @@ package com.ihtasham.Listeners;
 
 import com.ihtasham.database.DBManager;
 import com.ihtasham.model.RollingUser;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -39,6 +41,7 @@ public class ButtonListener extends ListenerAdapter {
           .editMessage(String.format("Roll was cancelled by %s!", event.getInteraction().getUser()))
           .override(true)
           .complete();
+      db.clearAllInGuild(guildId);
       return;
     }
 
@@ -83,7 +86,15 @@ public class ButtonListener extends ListenerAdapter {
                   "%s: `%s` = `%s`\n",
                   i + 1, sortedUsers.get(i).getName(), sortedUsers.get(i).getNumber()));
         }
-        event.reply(sb.toString()).complete();
+
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setTitle("Roll is complete, glhf!");
+        eb.setColor(Color.GREEN);
+        eb.setDescription(sb.toString());
+        eb.setFooter(
+            "Type !cs to start again", event.getMessage().getAuthor().getEffectiveAvatarUrl());
+
+        event.reply("").addEmbeds(eb.build()).complete();
       }
       db.clearAllInGuild(guildId);
       event
