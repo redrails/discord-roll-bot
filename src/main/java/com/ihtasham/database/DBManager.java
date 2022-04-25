@@ -2,7 +2,9 @@ package com.ihtasham.database;
 
 import static com.ihtasham.model.Constants.*;
 
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.Serializer;
@@ -55,8 +57,17 @@ public final class DBManager {
   }
 
   public void addPlayer(final String guildId, final String player) {
-    this.incrementPlayerCount(guildId);
+    this.incrementPlayerCount(guildId, true);
     this.put(guildId, PLAYER_LIST, this.get(guildId, PLAYER_LIST) + "," + player);
+  }
+
+  public void removePlayer(final String guildId, final String player) {
+    this.incrementPlayerCount(guildId, true);
+    final String newPlayers =
+        Arrays.stream(this.get(guildId, PLAYER_LIST).split(","))
+            .filter(p -> !p.equals(player))
+            .collect(Collectors.joining(","));
+    this.put(guildId, PLAYER_LIST, newPlayers);
   }
 
   public int getPlayerCount(final String guildId) {
@@ -71,12 +82,13 @@ public final class DBManager {
     return this.get(guildId, PLAYER_LIST).contains(player);
   }
 
-  private void incrementPlayerCount(final String guildId) {
+  private void incrementPlayerCount(final String guildId, final boolean decremenet) {
     try {
       this.put(
           guildId,
           PLAYER_COUNT,
-          Integer.toString(Integer.parseInt(this.get(guildId, PLAYER_COUNT)) + 1));
+          Integer.toString(
+              Integer.parseInt(this.get(guildId, PLAYER_COUNT)) + (decremenet ? 0 : 1)));
     } catch (NumberFormatException e) {
       this.put(guildId, PLAYER_COUNT, "1");
     }

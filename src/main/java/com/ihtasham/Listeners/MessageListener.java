@@ -75,7 +75,12 @@ public class MessageListener extends ListenerAdapter {
 
         final Message sentMessage =
             MessageUtils.sendMessageEmbedsWithActionRows(
-                event.getChannel(), eb.build(), PLAY_BUTTON, ROLL_BUTTON, CANCEL_BUTTON);
+                event.getChannel(),
+                eb.build(),
+                PLAY_BUTTON,
+                LEAVE_BUTTON,
+                ROLL_BUTTON,
+                CANCEL_BUTTON);
 
         db.createPlayersInMap(guildId);
         db.putMessageId(guildId, sentMessage.getId());

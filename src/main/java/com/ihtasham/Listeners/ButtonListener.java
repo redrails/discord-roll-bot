@@ -35,6 +35,16 @@ public class ButtonListener extends ListenerAdapter {
       }
     }
 
+    if (Objects.equals(event.getComponent().getId(), "leave")) {
+      if (db.anyPlayers(guildId, user)) {
+        db.removePlayer(guildId, user);
+        removeLineFromEmbed(event, String.format("\n- %s", user));
+      } else {
+        event.deferEdit().complete();
+        return;
+      }
+    }
+
     if (Objects.equals(event.getComponent().getId(), "cancel")) {
       event
           .getMessage()
@@ -108,6 +118,14 @@ public class ButtonListener extends ListenerAdapter {
   private void updateMessageEmbed(final ButtonInteractionEvent event, final String message) {
     final EmbedBuilder messageEmbed = new EmbedBuilder(event.getMessage().getEmbeds().get(0));
     messageEmbed.appendDescription(message);
+    event.editMessageEmbeds(messageEmbed.build()).queue();
+  }
+
+  private void removeLineFromEmbed(final ButtonInteractionEvent event, final String message) {
+    final EmbedBuilder messageEmbed = new EmbedBuilder(event.getMessage().getEmbeds().get(0));
+    final String originalMessage = messageEmbed.getDescriptionBuilder().toString();
+    final String newMessage = originalMessage.replace(message, "");
+    messageEmbed.setDescription(newMessage);
     event.editMessageEmbeds(messageEmbed.build()).queue();
   }
 
