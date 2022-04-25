@@ -1,7 +1,6 @@
 package com.ihtasham.database;
 
-import static com.ihtasham.model.Constants.MESSAGE_ID;
-import static com.ihtasham.model.Constants.PLAYER_LIST;
+import static com.ihtasham.model.Constants.*;
 
 import java.util.concurrent.ConcurrentMap;
 import org.mapdb.DB;
@@ -31,10 +30,6 @@ public final class DBManager {
     return map.containsKey(guildId + key);
   }
 
-  private void removeKey(final String guildId, final String key) {
-    map.remove(guildId + key);
-  }
-
   public void clearAllInGuild(final String guildId) {
     map.keySet().stream().filter(k -> k.contains(guildId)).forEach(map::remove);
   }
@@ -47,20 +42,44 @@ public final class DBManager {
     this.put(guildId, MESSAGE_ID, messageId);
   }
 
+  public void createPlayersInMap(final String guildId) {
+    this.put(guildId, PLAYER_LIST, "");
+  }
+
+  public String getMessageId(final String guildId) {
+    return this.get(guildId, MESSAGE_ID);
+  }
+
   public boolean messageExists(final String guildId) {
     return this.containsKey(guildId, MESSAGE_ID);
   }
 
-  public boolean playersExists(final String guildId) {
-    return this.containsKey(guildId, PLAYER_LIST);
-  }
-
-  public String getMessage(final String guildId) {
-    return this.get(guildId, MESSAGE_ID);
-  }
-
   public void addPlayer(final String guildId, final String player) {
+    this.incrementPlayerCount(guildId);
     this.put(guildId, PLAYER_LIST, this.get(guildId, PLAYER_LIST) + "," + player);
+  }
+
+  public int getPlayerCount(final String guildId) {
+    try {
+      return Integer.parseInt(this.get(guildId, PLAYER_COUNT));
+    } catch (NumberFormatException e) {
+      return 0;
+    }
+  }
+
+  public boolean anyPlayers(final String guildId, final String player) {
+    return this.get(guildId, PLAYER_LIST).contains(player);
+  }
+
+  private void incrementPlayerCount(final String guildId) {
+    try {
+      this.put(
+          guildId,
+          PLAYER_COUNT,
+          Integer.toString(Integer.parseInt(this.get(guildId, PLAYER_COUNT)) + 1));
+    } catch (NumberFormatException e) {
+      this.put(guildId, PLAYER_COUNT, "1");
+    }
   }
 
   public String getPlayers(final String guildId) {

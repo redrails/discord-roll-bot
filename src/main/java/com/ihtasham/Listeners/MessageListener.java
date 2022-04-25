@@ -1,10 +1,15 @@
 package com.ihtasham.Listeners;
 
+import static com.ihtasham.model.ButtonComponents.*;
+
 import com.ihtasham.database.DBManager;
 import com.ihtasham.model.Constants;
 import com.ihtasham.model.Emoji;
 import com.ihtasham.utils.MessageUtils;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -22,7 +27,7 @@ public class MessageListener extends ListenerAdapter {
   @Override
   public void onMessageReceived(@NotNull MessageReceivedEvent event) {
     if (event.getAuthor().isBot()) {
-      log.debug("Bot reacted, ignoring event");
+      log.debug("Bot messaged, ignoring event");
       return;
     }
 
@@ -58,25 +63,42 @@ public class MessageListener extends ListenerAdapter {
           return;
         }
 
-        final String messageToSend =
+        final EmbedBuilder eb = new EmbedBuilder();
+        eb.setTitle("CS:GO ROLL");
+        eb.setDescription(
             String.format(
-                "Press %s to join the queue and then press %s to roll!",
-                Emoji.VOTE_EMOJI.getUnicode(), Emoji.STOP_EMOJI.getUnicode());
+                "A game queue has started by %s! \n\nWho's playing: ",
+                event.getAuthor().getName()));
+        eb.setThumbnail(event.getAuthor().getAvatarUrl());
 
-        final Message sentMessage = MessageUtils.sendMessage(event.getChannel(), messageToSend);
+        final Message sentMessage =
+            MessageUtils.sendMessageEmbedsWithActionRows(
+                event.getChannel(), eb.build(), PLAY_BUTTON, ROLL_BUTTON, CANCEL_BUTTON);
 
-        sentMessage.addReaction(Emoji.VOTE_EMOJI.getUnicode()).complete();
-        sentMessage.addReaction(Emoji.STOP_EMOJI.getUnicode()).complete();
-
+        db.createPlayersInMap(guildId);
         db.putMessageId(guildId, sentMessage.getId());
       }
 
       if (Constants.ADD_COMMAND.equals(actionableMessage) && db.messageExists(guildId)) {
+        List<String> names = new ArrayList<>();
         event
             .getMessage()
             .getMentionedMembers()
-            .forEach(m -> db.addPlayer(guildId, m.getEffectiveName()));
+            .forEach(
+                m -> {
+                  db.addPlayer(guildId, m.getEffectiveName());
+                  names.add(m.getEffectiveName());
+                });
         event.getMessage().addReaction(Emoji.CHECK_EMOJI.getUnicode()).complete();
+
+        final Message messageToEdit =
+            event.getChannel().retrieveMessageById(db.getMessageId(guildId)).complete();
+
+        final EmbedBuilder messageEmbed = new EmbedBuilder(messageToEdit.getEmbeds().get(0));
+        for (String name : names) {
+          messageEmbed.appendDescription(String.format("\n- %s", name));
+        }
+        messageToEdit.editMessageEmbeds(messageEmbed.build()).queue();
       }
 
       if (Constants.HELP_COMMAND.equals(actionableMessage)) {
