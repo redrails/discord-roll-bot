@@ -68,9 +68,7 @@ public class MessageListener extends ListenerAdapter {
         final EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle("CS:GO ROLL");
         eb.setDescription(
-            String.format(
-                "%s has started a game queue! \n\nWho's playing: ",
-                event.getAuthor()));
+            String.format("%s has started a game queue! \n\nWho's playing: ", event.getAuthor()));
         eb.setThumbnail(event.getAuthor().getAvatarUrl());
         eb.setColor(Color.YELLOW);
 

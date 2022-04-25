@@ -95,7 +95,7 @@ public class ButtonListener extends ListenerAdapter {
         for (int i = 0; i < sortedUsers.size(); i++) {
           sb.append(
               String.format(
-                  "%s: `%s` = `%s`\n",
+                  "%s: @%s = `%s`\n",
                   i + 1, sortedUsers.get(i).getName(), sortedUsers.get(i).getNumber()));
         }
 
