@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -23,11 +24,12 @@ public class ButtonListener extends ListenerAdapter {
   public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
 
     final String guildId = event.getGuild().getId();
-    final String user = event.getInteraction().getUser().getName();
+    final User user = event.getInteraction().getUser();
+    final String userName = event.getInteraction().getUser().getName();
 
     if (Objects.equals(event.getComponent().getId(), "play")) {
-      if (!db.anyPlayers(guildId, user)) {
-        db.addPlayer(guildId, user);
+      if (!db.anyPlayers(guildId, userName)) {
+        db.addPlayer(guildId, userName);
         updateMessageEmbed(event, String.format("\n- %s", user));
       } else {
         event.deferEdit().complete();
@@ -36,8 +38,8 @@ public class ButtonListener extends ListenerAdapter {
     }
 
     if (Objects.equals(event.getComponent().getId(), "leave")) {
-      if (db.anyPlayers(guildId, user)) {
-        db.removePlayer(guildId, user);
+      if (db.anyPlayers(guildId, userName)) {
+        db.removePlayer(guildId, userName);
         removeLineFromEmbed(event, String.format("\n- %s", user));
       } else {
         event.deferEdit().complete();

@@ -57,7 +57,7 @@ public final class DBManager {
   }
 
   public void addPlayer(final String guildId, final String player) {
-    this.incrementPlayerCount(guildId, true);
+    this.incrementPlayerCount(guildId, false);
     this.put(guildId, PLAYER_LIST, this.get(guildId, PLAYER_LIST) + "," + player);
   }
 

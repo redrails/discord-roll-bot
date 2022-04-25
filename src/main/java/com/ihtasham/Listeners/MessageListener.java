@@ -12,6 +12,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -68,8 +69,8 @@ public class MessageListener extends ListenerAdapter {
         eb.setTitle("CS:GO ROLL");
         eb.setDescription(
             String.format(
-                "A game queue has started by %s! \n\nWho's playing: ",
-                event.getAuthor().getName()));
+                "%s has started a game queue! \n\nWho's playing: ",
+                event.getAuthor()));
         eb.setThumbnail(event.getAuthor().getAvatarUrl());
         eb.setColor(Color.YELLOW);
 
@@ -87,14 +88,14 @@ public class MessageListener extends ListenerAdapter {
       }
 
       if (Constants.ADD_COMMAND.equals(actionableMessage) && db.messageExists(guildId)) {
-        List<String> names = new ArrayList<>();
+        List<User> names = new ArrayList<>();
         event
             .getMessage()
             .getMentionedMembers()
             .forEach(
                 m -> {
                   db.addPlayer(guildId, m.getEffectiveName());
-                  names.add(m.getEffectiveName());
+                  names.add(m.getUser());
                 });
         event.getMessage().addReaction(Emoji.CHECK_EMOJI.getUnicode()).complete();
 
@@ -102,8 +103,8 @@ public class MessageListener extends ListenerAdapter {
             event.getChannel().retrieveMessageById(db.getMessageId(guildId)).complete();
 
         final EmbedBuilder messageEmbed = new EmbedBuilder(messageToEdit.getEmbeds().get(0));
-        for (String name : names) {
-          messageEmbed.appendDescription(String.format("\n- %s", name));
+        for (User user : names) {
+          messageEmbed.appendDescription(String.format("\n- %s", user));
         }
         messageToEdit.editMessageEmbeds(messageEmbed.build()).queue();
       }
