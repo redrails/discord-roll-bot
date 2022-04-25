@@ -88,7 +88,7 @@ public final class DBManager {
           guildId,
           PLAYER_COUNT,
           Integer.toString(
-              Integer.parseInt(this.get(guildId, PLAYER_COUNT)) + (decremenet ? 0 : 1)));
+              Integer.parseInt(this.get(guildId, PLAYER_COUNT)) + (decremenet ? -1 : 1)));
     } catch (NumberFormatException e) {
       this.put(guildId, PLAYER_COUNT, "1");
     }
