@@ -27,10 +27,13 @@ public class ButtonListener extends ListenerAdapter {
     final User user = event.getInteraction().getUser();
     final String userName = event.getInteraction().getUser().getName();
 
-    if (Objects.equals(event.getComponent().getId(), "play")) {
+    if (Objects.equals(event.getComponent().getId(), "join")) {
       if (!db.anyPlayers(guildId, userName)) {
         db.addPlayer(guildId, userName);
-        updateMessageEmbed(event, String.format("\n- %s", user));
+        updateMessageEmbedWithHeader(
+            event,
+            String.format("\n- %s", user),
+            String.format("%s players in the queue", db.getPlayerCount(guildId)));
       } else {
         event.deferEdit().complete();
         return;
@@ -40,7 +43,10 @@ public class ButtonListener extends ListenerAdapter {
     if (Objects.equals(event.getComponent().getId(), "leave")) {
       if (db.anyPlayers(guildId, userName)) {
         db.removePlayer(guildId, userName);
-        removeLineFromEmbed(event, String.format("\n- %s", user));
+        removeLineFromEmbedAndUpdateHeader(
+            event,
+            String.format("\n- %s", user),
+            String.format("%s players in the queue", db.getPlayerCount(guildId)));
       } else {
         event.deferEdit().complete();
         return;
@@ -57,7 +63,7 @@ public class ButtonListener extends ListenerAdapter {
       return;
     }
 
-    if (Objects.equals(event.getComponent().getId(), "roll")) {
+    if (Objects.equals(event.getComponent().getId(), "finish")) {
 
       if (db.getPlayerCount(guildId) < 1) {
         event
@@ -109,6 +115,7 @@ public class ButtonListener extends ListenerAdapter {
         event.reply("").addEmbeds(eb.build()).complete();
       }
       db.clearAllInGuild(guildId);
+
       event
           .getMessage()
           .editMessage(String.format("Roll was completed by %s!", event.getInteraction().getUser()))
@@ -117,18 +124,22 @@ public class ButtonListener extends ListenerAdapter {
     }
   }
 
-  private void updateMessageEmbed(final ButtonInteractionEvent event, final String message) {
+  private void updateMessageEmbedWithHeader(
+      final ButtonInteractionEvent event, final String message, final String header) {
     final EmbedBuilder messageEmbed = new EmbedBuilder(event.getMessage().getEmbeds().get(0));
+    messageEmbed.setTitle(header);
     messageEmbed.appendDescription(message);
-    event.editMessageEmbeds(messageEmbed.build()).queue();
+    event.editMessageEmbeds(messageEmbed.build()).complete();
   }
 
-  private void removeLineFromEmbed(final ButtonInteractionEvent event, final String message) {
+  private void removeLineFromEmbedAndUpdateHeader(
+      final ButtonInteractionEvent event, final String message, final String header) {
     final EmbedBuilder messageEmbed = new EmbedBuilder(event.getMessage().getEmbeds().get(0));
     final String originalMessage = messageEmbed.getDescriptionBuilder().toString();
     final String newMessage = originalMessage.replace(message, "");
     messageEmbed.setDescription(newMessage);
-    event.editMessageEmbeds(messageEmbed.build()).queue();
+    messageEmbed.setTitle(header);
+    event.editMessageEmbeds(messageEmbed.build()).complete();
   }
 
   private List<RollingUser> rollNumbers(List<String> rollingUsers) {

@@ -66,7 +66,7 @@ public class MessageListener extends ListenerAdapter {
         }
 
         final EmbedBuilder eb = new EmbedBuilder();
-        eb.setTitle("CS:GO ROLL");
+        eb.setTitle("Click Play to join the queue");
         eb.setDescription(
             String.format("%s has started a game queue! \n\nWho's playing: ", event.getAuthor()));
         eb.setThumbnail(event.getAuthor().getAvatarUrl());
@@ -76,9 +76,9 @@ public class MessageListener extends ListenerAdapter {
             MessageUtils.sendMessageEmbedsWithActionRows(
                 event.getChannel(),
                 eb.build(),
-                PLAY_BUTTON,
-                LEAVE_BUTTON,
                 ROLL_BUTTON,
+                LEAVE_BUTTON,
+                FINISH_BUTTON,
                 CANCEL_BUTTON);
 
         db.createPlayersInMap(guildId);
@@ -95,6 +95,17 @@ public class MessageListener extends ListenerAdapter {
                   db.addPlayer(guildId, m.getEffectiveName());
                   names.add(m.getUser());
                 });
+
+        if (names.size() < 1) {
+          event.getMessage().addReaction(Emoji.THUMBS_DOWN_EMOJI.getUnicode()).complete();
+          event
+              .getMessage()
+              .reply(
+                  "Cannot !add members unless they are mentioned in the message, e.g. !add @example")
+              .complete();
+          return;
+        }
+
         event.getMessage().addReaction(Emoji.CHECK_EMOJI.getUnicode()).complete();
 
         final Message messageToEdit =
@@ -104,7 +115,7 @@ public class MessageListener extends ListenerAdapter {
         for (User user : names) {
           messageEmbed.appendDescription(String.format("\n- %s", user));
         }
-        messageToEdit.editMessageEmbeds(messageEmbed.build()).queue();
+        messageToEdit.editMessageEmbeds(messageEmbed.build()).complete();
       }
 
       if (Constants.HELP_COMMAND.equals(actionableMessage)) {
