@@ -71,7 +71,6 @@ public class MessageListener extends ListenerAdapter {
             String.format(
                 "%s has started a game queue! \n\nWho's playing: \n - %s",
                 event.getAuthor(), event.getAuthor()));
-        db.addPlayer(guildId, event.getAuthor().getName());
         eb.setThumbnail(event.getAuthor().getAvatarUrl());
         eb.setColor(Color.YELLOW);
 
@@ -85,6 +84,7 @@ public class MessageListener extends ListenerAdapter {
                 CANCEL_BUTTON);
 
         db.createPlayersInMap(guildId);
+        db.addPlayer(guildId, event.getAuthor().getName());
         db.putMessageId(guildId, sentMessage.getId());
       }
 
