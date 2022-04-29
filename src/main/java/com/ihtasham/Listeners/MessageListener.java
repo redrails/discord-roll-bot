@@ -68,7 +68,10 @@ public class MessageListener extends ListenerAdapter {
         final EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle("Click Play to join the queue");
         eb.setDescription(
-            String.format("%s has started a game queue! \n\nWho's playing: ", event.getAuthor()));
+            String.format(
+                "%s has started a game queue! \n\nWho's playing: \n - %s",
+                event.getAuthor(), event.getAuthor()));
+        db.addPlayer(guildId, event.getAuthor().getName());
         eb.setThumbnail(event.getAuthor().getAvatarUrl());
         eb.setColor(Color.YELLOW);
 
