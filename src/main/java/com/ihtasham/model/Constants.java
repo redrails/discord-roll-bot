@@ -3,6 +3,7 @@ package com.ihtasham.model;
 public class Constants {
   public static final String MESSAGE_ID = "messageId";
   public static final String PLAYER_LIST = "playerList";
+  public static final String PLAYER_COUNT = "playerCOUNT";
   public static final char COMMAND_PREFIX = '!';
   public static final String ROLL_COMMAND = "cs";
   public static final String HELP_COMMAND = "cshelp";
