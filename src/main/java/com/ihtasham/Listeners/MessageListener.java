@@ -69,7 +69,7 @@ public class MessageListener extends ListenerAdapter {
         eb.setTitle("Click Play to join the queue");
         eb.setDescription(
             String.format(
-                "%s has started a game queue! \n\nWho's playing: \n - %s",
+                "%s has started a game queue! \n\nWho's playing: \n- %s",
                 event.getAuthor(), event.getAuthor()));
         eb.setThumbnail(event.getAuthor().getAvatarUrl());
         eb.setColor(Color.YELLOW);
