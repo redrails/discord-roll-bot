@@ -6,6 +6,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
@@ -16,9 +17,11 @@ import org.jetbrains.annotations.NotNull;
 public class ButtonListener extends ListenerAdapter {
 
   final DBManager db;
+  final AtomicBoolean messageInFlight;
 
   public ButtonListener(final DBManager db) {
     this.db = db;
+    this.messageInFlight = new AtomicBoolean(true);
   }
 
   @Override
@@ -127,12 +130,13 @@ public class ButtonListener extends ListenerAdapter {
 
   private void updateMessageEmbedWithHeader(
       final ButtonInteractionEvent event, final String message, final String header) {
-    final EmbedBuilder messageEmbed = new EmbedBuilder(event.getMessage().getEmbeds().get(0));
-    messageEmbed.setTitle(header);
-    messageEmbed.appendDescription(message);
-    event
-        .editMessageEmbeds(messageEmbed.build())
-        .queueAfter(new Random().nextInt(1000), TimeUnit.MILLISECONDS);
+    while (!messageInFlight.get()) {
+      messageInFlight.compareAndSet(false, true);
+      final EmbedBuilder messageEmbed = new EmbedBuilder(event.getMessage().getEmbeds().get(0));
+      messageEmbed.setTitle(header);
+      messageEmbed.appendDescription(message);
+      event.editMessageEmbeds(messageEmbed.build()).queue();
+    }
   }
 
   private void removeLineFromEmbedAndUpdateHeader(
