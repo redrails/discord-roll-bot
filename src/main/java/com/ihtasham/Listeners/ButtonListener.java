@@ -21,7 +21,7 @@ public class ButtonListener extends ListenerAdapter {
 
   public ButtonListener(final DBManager db) {
     this.db = db;
-    this.messageInFlight = new AtomicBoolean(true);
+    this.messageInFlight = new AtomicBoolean(false);
   }
 
   @Override
