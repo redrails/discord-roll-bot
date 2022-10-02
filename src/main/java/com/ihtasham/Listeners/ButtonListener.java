@@ -31,10 +31,7 @@ public class ButtonListener extends ListenerAdapter {
     if (Objects.equals(event.getComponent().getId(), "join")) {
       if (!db.anyPlayers(guildId, userName)) {
         db.addPlayer(guildId, userName);
-        updateMessageEmbedWithHeader(
-            event,
-            String.format("\n- %s", user),
-            String.format("%s players in the queue", db.getPlayerCount(guildId)));
+        updateMessageEmbedWithHeader(event, guildId);
       } else {
         event.deferEdit().complete();
         return;
@@ -126,13 +123,27 @@ public class ButtonListener extends ListenerAdapter {
   }
 
   private void updateMessageEmbedWithHeader(
-      final ButtonInteractionEvent event, final String message, final String header) {
+      final ButtonInteractionEvent event, final String guildId) {
     final EmbedBuilder messageEmbed = new EmbedBuilder(event.getMessage().getEmbeds().get(0));
-    messageEmbed.setTitle(header);
-    messageEmbed.appendDescription(message);
+    messageEmbed.setTitle(renderHeader(guildId));
+    messageEmbed.appendDescription(renderBody(guildId));
     event
         .editMessageEmbeds(messageEmbed.build())
-        .queueAfter(new Random().nextInt(1000), TimeUnit.MILLISECONDS);
+        .queueAfter(new Random().nextInt(3000), TimeUnit.MILLISECONDS);
+  }
+
+  private String renderHeader(final String guildId) {
+    return String.format("%s players in the queue", db.getPlayerCount(guildId));
+  }
+
+  private String renderBody(final String guildId) {
+    StringBuilder s = new StringBuilder();
+    Arrays.stream(db.getPlayers(guildId).split(","))
+        .forEach(
+            p -> {
+              s.append(String.format("\n- %s", p));
+            });
+    return s.toString();
   }
 
   private void removeLineFromEmbedAndUpdateHeader(
