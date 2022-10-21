@@ -1,7 +1,7 @@
 package com.ihtasham;
 
-import com.ihtasham.Listeners.ButtonListener;
 import com.ihtasham.Listeners.MessageListener;
+import com.ihtasham.Listeners.ReactionListener;
 import com.ihtasham.database.DBManager;
 import com.ihtasham.model.Constants;
 import javax.security.auth.login.LoginException;
@@ -17,7 +17,7 @@ public class Application {
       DBManager db = new DBManager();
       JDABuilder.createDefault(System.getenv(Constants.TOKEN))
           .setActivity(Activity.playing(Constants.PLAYING))
-          .addEventListeners(new MessageListener(db), new ButtonListener(db))
+          .addEventListeners(new ReactionListener(db), new MessageListener(db))
           .build();
 
     } catch (LoginException e) {
