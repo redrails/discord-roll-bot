@@ -5,7 +5,6 @@ import com.ihtasham.model.RollingUser;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
@@ -130,9 +129,7 @@ public class ButtonListener extends ListenerAdapter {
     final EmbedBuilder messageEmbed = new EmbedBuilder(event.getMessage().getEmbeds().get(0));
     messageEmbed.setTitle(header);
     messageEmbed.appendDescription(message);
-    event
-        .editMessageEmbeds(messageEmbed.build())
-        .queueAfter(new Random().nextInt(1000), TimeUnit.MILLISECONDS);
+    event.editMessageEmbeds(messageEmbed.build()).complete();
   }
 
   private void removeLineFromEmbedAndUpdateHeader(
@@ -142,9 +139,7 @@ public class ButtonListener extends ListenerAdapter {
     final String newMessage = originalMessage.replace(message, "");
     messageEmbed.setDescription(newMessage);
     messageEmbed.setTitle(header);
-    event
-        .editMessageEmbeds(messageEmbed.build())
-        .queueAfter(new Random().nextInt(1000), TimeUnit.MILLISECONDS);
+    event.editMessageEmbeds(messageEmbed.build()).complete();
   }
 
   private List<RollingUser> rollNumbers(List<String> rollingUsers) {
